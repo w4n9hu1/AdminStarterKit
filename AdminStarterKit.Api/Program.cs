@@ -5,12 +5,39 @@ using AdminStarterKit.Domain.Shared;
 using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please provide a valid token!",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference=new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+});
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Position));
 var jwtConfig = builder.Configuration.GetSection(JwtConfig.Position).Get<JwtConfig>();
@@ -53,16 +80,10 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () =>
-{
-    return "hello world";
-});
-
 app.MapGet("/register", () =>
 {
     return "hello world";
 });
-
 
 app.MapPost("/login", (LoginRequest request, IUserRepository userRepository, ITokenService tokenService) =>
 {
@@ -75,7 +96,12 @@ app.MapPost("/login", (LoginRequest request, IUserRepository userRepository, ITo
     return token;
 });
 
-app.MapGet("/user", (ClaimsPrincipal user) =>
+app.MapGet("/", () =>
+{
+    return "hello world";
+}).RequireAuthorization();
+
+app.MapGet("/operator", (ClaimsPrincipal user) =>
 {
     return $"hello {user?.Identity?.Name}";
 })
