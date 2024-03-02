@@ -1,7 +1,0 @@
-@AdminStarterKit.Api_HostAddress = http://localhost:5267
-
-GET {{AdminStarterKit.Api_HostAddress}}/admin
-Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwibmJmIjoxNzA5MzAwMTM5LCJleHAiOjE3MDkzMDM3MzksImlhdCI6MTcwOTMwMDEzOSwiaXNzIjoiaHR0cHM6Ly9hZG1pbi5kZXYvIiwiYXVkIjoiaHR0cHM6Ly9hZG1pbi5kZXYvIn0.2ZCLuVeI3vkA_L8Z-KEv_eHf7m6XGsp8R-ZQq99rSng
-
-###

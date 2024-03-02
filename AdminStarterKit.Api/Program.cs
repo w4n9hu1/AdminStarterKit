@@ -1,43 +1,21 @@
+using AdminStarterKit.Api;
 using AdminStarterKit.Application;
 using AdminStarterKit.Application.Contracts;
 using AdminStarterKit.Domain;
+using AdminStarterKit.Domain.Enums;
 using AdminStarterKit.Domain.Shared;
 using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please provide a valid token!",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference=new OpenApiReference
-                        {
-                            Type=ReferenceType.SecurityScheme,
-                            Id="Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-});
+builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Position));
 var jwtConfig = builder.Configuration.GetSection(JwtConfig.Position).Get<JwtConfig>();
@@ -62,8 +40,8 @@ builder.Services.AddAuthentication(config =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("admin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("operator", policy => policy.RequireRole("Operator"));
+    options.AddPolicy("admin", policy => policy.RequireRole(Role.Admin.ToString()));
+    options.AddPolicy("operator", policy => policy.RequireRole(Role.Operator.ToString()));
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -96,7 +74,7 @@ app.MapPost("/login", (LoginRequest request, IUserRepository userRepository, ITo
     return token;
 });
 
-app.MapGet("/", () =>
+app.MapGet("/dashboard", () =>
 {
     return "hello world";
 }).RequireAuthorization();
