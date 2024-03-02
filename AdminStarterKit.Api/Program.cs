@@ -6,6 +6,7 @@ using AdminStarterKit.Domain.Enums;
 using AdminStarterKit.Domain.Shared;
 using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,6 +20,24 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Position));
 var jwtConfig = builder.Configuration.GetSection(JwtConfig.Position).Get<JwtConfig>();
+
+var corsOrigins = builder.Configuration.GetSection("CorsOrigins").Get<string[]>();
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    if (corsOrigins != null && corsOrigins.Length > 0)
+    {
+        options.AddPolicy(name: MyAllowSpecificOrigins,
+                          policy =>
+                          {
+                              policy.WithOrigins(corsOrigins)
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                          });
+    }
+});
 
 builder.Services.AddAuthentication(config =>
 {
@@ -54,6 +73,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
