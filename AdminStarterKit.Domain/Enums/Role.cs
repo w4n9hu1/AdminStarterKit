@@ -1,6 +1,6 @@
 ﻿namespace AdminStarterKit.Domain.Enums
 {
-    public enum Role
+    public enum RoleName
     {
         Admin,
         Operator

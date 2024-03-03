@@ -2,6 +2,6 @@
 {
     public interface IUserRepository
     {
-        User Find(string username, string password);
+        User Find(string email, string password);
     }
 }

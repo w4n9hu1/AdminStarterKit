@@ -1,9 +1,12 @@
-﻿using AdminStarterKit.Domain.Enums;
+﻿using AdminStarterKit.Domain;
+using AdminStarterKit.Domain.Enums;
 
 namespace AdminStarterKit.Application
 {
     public interface ITokenService
     {
-        string GenerateToken(string username, Role role);
+        string GenerateAccessToken(User user);
+
+        string GenerateRefreshToken(User user);
     }
 }

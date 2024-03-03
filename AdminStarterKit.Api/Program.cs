@@ -6,6 +6,7 @@ using AdminStarterKit.Domain.Enums;
 using AdminStarterKit.Domain.Shared;
 using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -59,8 +60,8 @@ builder.Services.AddAuthentication(config =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("admin", policy => policy.RequireRole(Role.Admin.ToString()));
-    options.AddPolicy("operator", policy => policy.RequireRole(Role.Operator.ToString()));
+    options.AddPolicy("admin", policy => policy.RequireRole(RoleName.Admin.ToString()));
+    options.AddPolicy("operator", policy => policy.RequireRole(RoleName.Operator.ToString()));
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -85,13 +86,22 @@ app.MapGet("/register", () =>
 
 app.MapPost("/login", (LoginRequest request, IUserRepository userRepository, ITokenService tokenService) =>
 {
-    var user = userRepository.Find(request.UserName, request.Password);
+    var user = userRepository.Find(request.Email, request.Password);
     if (user == null)
     {
-        return "invalid user.";
+        return TypedResults.Problem("invlaid user", statusCode: StatusCodes.Status401Unauthorized);
     }
-    var token = tokenService.GenerateToken(user.UserName, user.Role);
-    return token;
+    var tokenResponse = new AccessTokenResponse
+    {
+        AccessToken = tokenService.GenerateAccessToken(user),
+        RefreshToken = tokenService.GenerateRefreshToken(user)
+    };
+    return Results.Ok(tokenResponse);
+});
+
+app.MapGet("/refresh", () =>
+{
+    return "hello world";
 });
 
 app.MapGet("/dashboard", () =>
