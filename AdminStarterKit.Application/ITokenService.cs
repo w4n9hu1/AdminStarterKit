@@ -1,5 +1,5 @@
-﻿using AdminStarterKit.Domain;
-using AdminStarterKit.Domain.Enums;
+﻿using AdminStarterKit.Domain.Enums;
+using AdminStarterKit.Domain.Identity;
 
 namespace AdminStarterKit.Application
 {

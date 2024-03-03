@@ -1,13 +1,13 @@
 using AdminStarterKit.Api;
 using AdminStarterKit.Application;
 using AdminStarterKit.Application.Contracts;
-using AdminStarterKit.Domain;
 using AdminStarterKit.Domain.Enums;
+using AdminStarterKit.Domain.Identity;
 using AdminStarterKit.Domain.Shared;
 using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -79,24 +79,27 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/register", () =>
+app.MapPost("/register", async Task<Results<Ok, ValidationProblem>> (RegisterRequest request,
+    [FromServices] IServiceProvider sp) =>
 {
-    return "hello world";
+    return TypedResults.Ok();
 });
 
-app.MapPost("/login", (LoginRequest request, IUserRepository userRepository, ITokenService tokenService) =>
+app.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> (LoginRequest request, [FromServices] IServiceProvider sp) =>
 {
-    var user = userRepository.Find(request.Email, request.Password);
+    var userRepository = sp.GetRequiredService<IUserRepository>();
+    var user = await userRepository.FindByEmailAsync(request.Email);
     if (user == null)
     {
         return TypedResults.Problem("invlaid user", statusCode: StatusCodes.Status401Unauthorized);
     }
+    var tokenService = sp.GetRequiredService<ITokenService>();
     var tokenResponse = new AccessTokenResponse
     {
         AccessToken = tokenService.GenerateAccessToken(user),
         RefreshToken = tokenService.GenerateRefreshToken(user)
     };
-    return Results.Ok(tokenResponse);
+    return TypedResults.Ok(tokenResponse);
 });
 
 app.MapGet("/refresh", () =>

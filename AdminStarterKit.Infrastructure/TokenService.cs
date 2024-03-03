@@ -1,5 +1,5 @@
 ﻿using AdminStarterKit.Application;
-using AdminStarterKit.Domain;
+using AdminStarterKit.Domain.Identity;
 using AdminStarterKit.Domain.Shared;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
