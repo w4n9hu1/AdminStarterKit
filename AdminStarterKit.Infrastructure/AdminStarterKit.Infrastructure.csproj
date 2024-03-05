@@ -10,4 +10,8 @@
     <ProjectReference Include="..\AdminStarterKit.Domain\AdminStarterKit.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EntityConfigurations\" />
+  </ItemGroup>
+
 </Project>
