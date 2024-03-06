@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdminStarterKit.Domain.Aggregates
+namespace AdminStarterKit.Domain
 {
-    public interface IRoleRepository: IRepository<Role>
+    public interface IRepository<T> where T : IAggregateRoot
     {
+        IUnitOfWork UnitOfWork { get; }
     }
 }
