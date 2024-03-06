@@ -14,6 +14,8 @@ namespace AdminStarterKit.Domain.Aggregates
 
         public string Email { get; set; }
 
+        public string PhoneNumber { get; set; }
+
         public bool IsLocked { get; set; }
 
         public DateTimeOffset CreatedDateTime { get; set; }
