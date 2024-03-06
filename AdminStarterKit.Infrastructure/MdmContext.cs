@@ -9,6 +9,8 @@ namespace AdminStarterKit.Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
+        public MdmContext(DbContextOptions<MdmContext> options) : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserEntityConfig());
