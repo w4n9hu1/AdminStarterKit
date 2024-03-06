@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdminStarterKit.Domain\AdminStarterKit.Domain.csproj" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EntityConfigurations\" />
+    <ProjectReference Include="..\AdminStarterKit.Domain\AdminStarterKit.Domain.csproj" />
   </ItemGroup>
 
 </Project>
