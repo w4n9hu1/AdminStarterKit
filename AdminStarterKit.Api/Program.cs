@@ -1,7 +1,10 @@
 using AdminStarterKit.Api.Contracts;
 using AdminStarterKit.Api.Extensions;
+using AdminStarterKit.Api.Validations;
 using AdminStarterKit.Domain.Aggregates;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +30,10 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapPost("/user", async ([FromBody] CreateUserRequest request, [FromServices] IServiceProvider sp) =>
 {
+    var validator = new CreateUserRequestValidator();
+    // validator.ValidateAndThrow(request);
+    var validationResult = await validator.ValidateAsync(request);
+
     var user = new User
     {
         Email = request.Email,
