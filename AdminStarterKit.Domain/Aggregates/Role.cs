@@ -10,7 +10,7 @@ namespace AdminStarterKit.Domain.Aggregates
     {
         public string RoleName { get; set; }
 
-        public DateTimeOffset CreatedDateTime { get; set; }
+        public DateTime CreatedDateTime { get; set; }
 
         public IEnumerable<User> Users { get; set; }
     }

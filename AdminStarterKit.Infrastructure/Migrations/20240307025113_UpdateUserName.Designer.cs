@@ -4,6 +4,7 @@ using AdminStarterKit.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminStarterKit.Infrastructure.Migrations
 {
     [DbContext(typeof(MdmContext))]
-    partial class MdmContextModelSnapshot : ModelSnapshot
+    [Migration("20240307025113_UpdateUserName")]
+    partial class UpdateUserName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,15 +33,12 @@ namespace AdminStarterKit.Infrastructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                    b.Property<DateTimeOffset>("CreatedDateTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("RoleName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -54,36 +54,29 @@ namespace AdminStarterKit.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsLocked")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTimeOffset>("UpdatedDateTime")
-                        .ValueGeneratedOnUpdate()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.HasKey("Id");
 

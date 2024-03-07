@@ -4,6 +4,7 @@ using AdminStarterKit.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminStarterKit.Infrastructure.Migrations
 {
     [DbContext(typeof(MdmContext))]
-    partial class MdmContextModelSnapshot : ModelSnapshot
+    [Migration("20240307032145_UpdateUserAndRole")]
+    partial class UpdateUserAndRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,8 +35,8 @@ namespace AdminStarterKit.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("RoleName")
                         .IsRequired()
@@ -54,9 +57,7 @@ namespace AdminStarterKit.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -76,9 +77,7 @@ namespace AdminStarterKit.Infrastructure.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<DateTimeOffset>("UpdatedDateTime")
-                        .ValueGeneratedOnUpdate()
-                        .HasColumnType("TIMESTAMP(3)")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP(3)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
