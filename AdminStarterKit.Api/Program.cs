@@ -4,7 +4,6 @@ using AdminStarterKit.Api.Validations;
 using AdminStarterKit.Domain.Aggregates;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -28,22 +27,36 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapPost("/user", async ([FromBody] CreateUserRequest request, [FromServices] IServiceProvider sp) =>
+app.MapPost("/user", async Task<CommonApiResponse<UserDto>> ([FromBody] CreateUserRequest request, [FromServices] IServiceProvider sp) =>
 {
     var validator = new CreateUserRequestValidator();
-    // validator.ValidateAndThrow(request);
     var validationResult = await validator.ValidateAsync(request);
-
+    if (validationResult.IsValid == false)
+    {
+        return CommonApiResponse<UserDto>.Failed(validationResult.ToString());
+    }
     var user = new User
     {
         Email = request.Email,
         UserName = request.UserName,
-        PasswordHash = request.Password
+        PasswordHash = request.Password,
+        CreatedDateTime = DateTimeOffset.UtcNow,
+        UpdatedDateTime = DateTimeOffset.UtcNow
     };
     var userRepository = sp.GetRequiredService<IUserRepository>();
     userRepository.Add(user);
     await userRepository.UnitOfWork.SaveChangesAsync();
-    return request.UserName;
+    // var userDto = user.ToUserDto();
+    var userDto = new UserDto
+    {
+        Id = user.Id,
+        Email = user.Email,
+        UserName = user.UserName,
+        PhoneNumber = user.PhoneNumber,
+        IsLocked = user.IsLocked,
+        Roles = user.Roles
+    };
+    return CommonApiResponse<UserDto>.Success(userDto);
 });
 
 app.Run();
