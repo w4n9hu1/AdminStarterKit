@@ -16,6 +16,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapGroup("/auth").MapAuthApi();
 app.MapGroup("/mdm").MapMdmApi();
+
+
 
 app.Run();
