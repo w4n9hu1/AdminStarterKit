@@ -21,9 +21,9 @@ namespace AdminStarterKit.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleName = table.Column<string>(type: "longtext", nullable: false)
+                    RoleName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedDateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
+                    CreatedDateTime = table.Column<DateTime>(type: "TIMESTAMP(3)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(3)")
                 },
                 constraints: table =>
                 {
@@ -37,17 +37,17 @@ namespace AdminStarterKit.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PasswordHash = table.Column<string>(type: "longtext", nullable: false)
+                    PasswordHash = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "longtext", nullable: false)
+                    UserName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsLocked = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    CreatedDateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    UpdatedDateTime = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
+                    CreatedDateTime = table.Column<DateTimeOffset>(type: "TIMESTAMP(3)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(3)"),
+                    UpdatedDateTime = table.Column<DateTimeOffset>(type: "TIMESTAMP(3)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP(3)")
                 },
                 constraints: table =>
                 {

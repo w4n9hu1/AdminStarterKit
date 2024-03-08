@@ -2,6 +2,7 @@ using AdminStarterKit.Api.Contracts;
 using AdminStarterKit.Api.Extensions;
 using AdminStarterKit.Api.Validations;
 using AdminStarterKit.Domain.Aggregates;
+using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,16 +47,8 @@ app.MapPost("/user", async Task<CommonApiResponse<UserDto>> ([FromBody] CreateUs
     var userRepository = sp.GetRequiredService<IUserRepository>();
     userRepository.Add(user);
     await userRepository.UnitOfWork.SaveChangesAsync();
-    // var userDto = user.ToUserDto();
-    var userDto = new UserDto
-    {
-        Id = user.Id,
-        Email = user.Email,
-        UserName = user.UserName,
-        PhoneNumber = user.PhoneNumber,
-        IsLocked = user.IsLocked,
-        Roles = user.Roles
-    };
+    var mapper = sp.GetRequiredService<IMapper>();
+    var userDto = mapper.Map<UserDto>(user);
     return CommonApiResponse<UserDto>.Success(userDto);
 });
 

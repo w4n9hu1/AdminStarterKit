@@ -1,6 +1,4 @@
-﻿using AdminStarterKit.Domain.Aggregates;
-
-namespace AdminStarterKit.Api.Contracts
+﻿namespace AdminStarterKit.Api.Contracts
 {
     public class UserDto
     {
@@ -14,6 +12,6 @@ namespace AdminStarterKit.Api.Contracts
 
         public bool IsLocked { get; set; }
 
-        public IEnumerable<Role> Roles { get; set; }
+        public IEnumerable<RoleDto> Roles { get; set; }
     }
 }

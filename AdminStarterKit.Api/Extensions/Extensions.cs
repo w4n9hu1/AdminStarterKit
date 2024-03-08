@@ -1,4 +1,5 @@
-﻿using AdminStarterKit.Domain.Aggregates;
+﻿using AdminStarterKit.Api.Mapper;
+using AdminStarterKit.Domain.Aggregates;
 using AdminStarterKit.Infrastructure;
 using AdminStarterKit.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ namespace AdminStarterKit.Api.Extensions
                .LogTo(Console.WriteLine, LogLevel.Information)
                .EnableSensitiveDataLogging()
                .EnableDetailedErrors());
+
+            services.AddAutoMapper(typeof(UserProfile));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
