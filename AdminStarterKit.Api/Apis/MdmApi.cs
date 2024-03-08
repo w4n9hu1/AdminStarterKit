@@ -24,11 +24,11 @@ namespace AdminStarterKit.Api.Apis
             builder.MapDelete("role/{roleId:int}", DeleteRoleAsync);
             builder.MapPut("role/{roleId:int}", UpdateRoleAsync);
 
-            builder.MapPost("/bindRoleToUser", BindRoleToUserAsync);
+            builder.MapPost("/assignRoleToUser", AssignRoleToUserAsync);
             return builder;
         }
 
-        private static async Task<Results<Ok, NotFound<string>>> BindRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] MdmServices services)
+        private static async Task<Results<Ok, NotFound<string>>> AssignRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] MdmServices services)
         {
             var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == request.UserId);
             if (user == null)

@@ -8,6 +8,7 @@ namespace AdminStarterKit.Api.Apis
         public static RouteGroupBuilder MapAuthApi(this RouteGroupBuilder builder)
         {
             builder.MapPost("/register", RegisterAsync);
+            builder.MapPost("/login", RegisterAsync);
             return builder;
         }
 
