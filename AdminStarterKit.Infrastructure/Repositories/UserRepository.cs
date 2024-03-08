@@ -1,5 +1,6 @@
 ﻿using AdminStarterKit.Domain;
 using AdminStarterKit.Domain.Aggregates;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdminStarterKit.Infrastructure.Repositories
 {
@@ -21,8 +22,27 @@ namespace AdminStarterKit.Infrastructure.Repositories
 
         public async Task<User> GetAsync(int userId)
         {
+            return await _mdmContext.Users.FindAsync(userId);
+        }
+
+        public async Task DeleteAsync(int userId)
+        {
             var user = await _mdmContext.Users.FindAsync(userId);
-            return user;
+            if (user == null)
+            {
+                return;
+            }
+            _mdmContext.Users.Remove(user);
+        }
+
+        public void Update(User user)
+        {
+            _mdmContext.Entry(user).State = EntityState.Modified;
+        }
+
+        public IEnumerable<User> GetAllAsync()
+        {
+            return _mdmContext.Users;
         }
     }
 }
