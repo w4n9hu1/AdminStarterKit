@@ -23,7 +23,26 @@ namespace AdminStarterKit.Api.Apis
             builder.MapGet("/role/{roleId:int}", GetRoleByIdAsync);
             builder.MapDelete("role/{roleId:int}", DeleteRoleAsync);
             builder.MapPut("role/{roleId:int}", UpdateRoleAsync);
+
+            builder.MapPost("/bindRoleToUser", BindRoleToUserAsync);
             return builder;
+        }
+
+        private static async Task<Results<Ok, NotFound<string>>> BindRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] MdmServices services)
+        {
+            var user = await services.MdmContext.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                return TypedResults.NotFound(Resources.NotFound(nameof(request.UserId)));
+            }
+            var roles = new List<Role>();
+            if (request.RoleIds?.Count > 0)
+            {
+                roles = await services.MdmContext.Roles.Where(r => request.RoleIds.Contains(r.Id)).ToListAsync();
+            }
+            user.Roles = roles;
+            await services.MdmContext.SaveChangesAsync();
+            return TypedResults.Ok();
         }
 
         public static async Task<Ok<List<UserDto>>> GetAllUserAsync([AsParameters] MdmServices services)
