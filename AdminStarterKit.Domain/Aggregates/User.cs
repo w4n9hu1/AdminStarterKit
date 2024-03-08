@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdminStarterKit.Domain.Aggregates
+﻿namespace AdminStarterKit.Domain.Aggregates
 {
     public class User : Entity, IAggregateRoot
     {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace AdminStarterKit.Api.Contracts
+﻿namespace AdminStarterKit.Api.Contracts
 {
     public class CommonApiResponse<T>
     {
