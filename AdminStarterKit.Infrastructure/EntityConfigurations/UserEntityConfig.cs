@@ -22,7 +22,11 @@ namespace AdminStarterKit.Infrastructure.EntityConfigurations
             builder.Property(u => u.UpdatedDateTime)
                    .HasColumnType("TIMESTAMP(3)");
             builder.HasMany(u => u.Roles).WithMany(r => r.Users)
-                .UsingEntity(r => r.ToTable("mdm_user_role"));
+                  .UsingEntity<Dictionary<string, object>>(
+                    "mdm_user_role",
+                    r => r.HasOne<Role>().WithMany().HasForeignKey("RoleId"),
+                    l => l.HasOne<User>().WithMany().HasForeignKey("UserId")
+                );
         }
     }
 }

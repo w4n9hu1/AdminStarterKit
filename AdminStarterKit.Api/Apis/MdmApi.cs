@@ -30,7 +30,7 @@ namespace AdminStarterKit.Api.Apis
 
         private static async Task<Results<Ok, NotFound<string>>> BindRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] MdmServices services)
         {
-            var user = await services.MdmContext.Users.FindAsync(request.UserId);
+            var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == request.UserId);
             if (user == null)
             {
                 return TypedResults.NotFound(Resources.NotFound(nameof(request.UserId)));
@@ -54,7 +54,7 @@ namespace AdminStarterKit.Api.Apis
 
         public static async Task<Results<Ok<UserDto>, NotFound<string>>> GetUserByIdAsync(int userId, [AsParameters] MdmServices services)
         {
-            var user = await services.MdmContext.Users.FindAsync(userId);
+            var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
                 return TypedResults.NotFound(Resources.NotFound(nameof(userId)));

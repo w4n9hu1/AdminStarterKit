@@ -14,6 +14,8 @@
 
         public string? Password { get; set; }
 
+        public bool IsAdmin { get; set; }
+
         public DateTimeOffset CreatedDateTime { get; set; }
 
         public DateTimeOffset? UpdatedDateTime { get; set; }
