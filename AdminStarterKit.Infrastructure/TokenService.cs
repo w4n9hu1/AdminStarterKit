@@ -3,6 +3,7 @@ using AdminStarterKit.Domain.Aggregates;
 using AdminStarterKit.Domain.Shared;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -34,10 +35,18 @@ namespace AdminStarterKit.Infrastructure
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, user.Id.ToString()),
+                new(ClaimTypes.Email, user.Email),
             };
-            foreach (var role in user.Roles)
+            if (user.IsAdmin)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
+                claims.Add(new Claim(ClaimTypes.Role, "admin"));
+            }
+            if (user.Roles?.Count() > 0)
+            {
+                foreach (var role in user.Roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
+                }
             }
             var tokenDescriptor = new SecurityTokenDescriptor
             {

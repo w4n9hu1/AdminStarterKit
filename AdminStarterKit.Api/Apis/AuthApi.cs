@@ -3,7 +3,6 @@ using AdminStarterKit.Api.Contracts;
 using AdminStarterKit.Api.Validations;
 using AdminStarterKit.Domain;
 using AdminStarterKit.Domain.Shared;
-using AdminStarterKit.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +25,7 @@ namespace AdminStarterKit.Api.Apis
             {
                 return TypedResults.BadRequest(validationResult.ToString());
             }
-            var user = await services.MdmContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
             {
                 return TypedResults.BadRequest(Resources.EmailNotFound(request.Email));
