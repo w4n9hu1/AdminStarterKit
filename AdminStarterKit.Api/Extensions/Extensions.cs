@@ -1,4 +1,5 @@
 ﻿using AdminStarterKit.Api.Mapper;
+using AdminStarterKit.Domain;
 using AdminStarterKit.Domain.Aggregates;
 using AdminStarterKit.Infrastructure;
 using AdminStarterKit.Infrastructure.Repositories;
@@ -23,6 +24,7 @@ namespace AdminStarterKit.Api.Extensions
 
             services.AddAutoMapper(typeof(UserProfile));
 
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
         }

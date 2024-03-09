@@ -1,8 +1,10 @@
-﻿namespace AdminStarterKit.Domain.Aggregates
+﻿using AdminStarterKit.Domain.Shared;
+
+namespace AdminStarterKit.Domain.Aggregates
 {
     public class User : Entity, IAggregateRoot
     {
-        public string?  UserName { get; set; }
+        public string? UserName { get; set; }
 
         public string Email { get; set; }
 
@@ -28,7 +30,7 @@
             {
                 Password = Email;
             }
-            PasswordHash = "hash_" + Password;
+            PasswordHash = PasswordHasher.HashPassword(Password);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace AdminStarterKit.Api.Apis
             return builder;
         }
 
-        private static async Task<Results<Ok, NotFound<string>>> AssignRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] MdmServices services)
+        private static async Task<Results<Ok, NotFound<string>>> AssignRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] DiServices services)
         {
             var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == request.UserId);
             if (user == null)
@@ -45,14 +45,14 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok<List<UserDto>>> GetAllUserAsync([AsParameters] MdmServices services)
+        public static async Task<Ok<List<UserDto>>> GetAllUserAsync([AsParameters] DiServices services)
         {
             var users = await services.MdmContext.Users.OrderBy(u => u.CreatedDateTime).ToListAsync();
             var usersDto = services.Mapper.Map<List<UserDto>>(users);
             return TypedResults.Ok(usersDto);
         }
 
-        public static async Task<Results<Ok<UserDto>, NotFound<string>>> GetUserByIdAsync(int userId, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok<UserDto>, NotFound<string>>> GetUserByIdAsync(int userId, [AsParameters] DiServices services)
         {
             var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == userId);
             if (user == null)
@@ -63,13 +63,18 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(userDto);
         }
 
-        public static async Task<Results<Ok, BadRequest<string>>> CreateUserAsync([FromBody] CreateUserRequest request, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok, BadRequest<string>>> CreateUserAsync([FromBody] CreateUserRequest request, [AsParameters] DiServices services)
         {
             var validator = new CreateUserRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (validationResult.IsValid == false)
             {
                 return TypedResults.BadRequest(validationResult.ToString());
+            }
+            var exsitedUser = await services.MdmContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (exsitedUser != null)
+            {
+                return TypedResults.BadRequest(Resources.DuplicateEmail(request.Email));
             }
             var user = new User
             {
@@ -83,19 +88,27 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateUserAsync(int userId, [FromBody] CreateUserRequest request, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateUserAsync(int userId, [FromBody] CreateUserRequest request, [AsParameters] DiServices services)
         {
-            var user = services.MdmContext.Users.SingleOrDefault(u => u.Id == userId);
-            if (user == null)
-            {
-                return TypedResults.NotFound(Resources.NotFound(nameof(userId)));
-            }
             var validator = new CreateUserRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (validationResult.IsValid == false)
             {
                 return TypedResults.BadRequest(validationResult.ToString());
             }
+
+            var user = services.MdmContext.Users.SingleOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return TypedResults.NotFound(Resources.NotFound(nameof(userId)));
+            }
+
+            var exsitedEmail = await services.MdmContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.Id != userId);
+            if (exsitedEmail != null)
+            {
+                return TypedResults.BadRequest(Resources.DuplicateEmail(request.Email));
+            }
+
             user.UserName = request.UserName;
             user.Email = request.Email;
             user.PhoneNumber = request.PhoneNumber;
@@ -104,7 +117,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok> DeleteUserAsync(int userId, [AsParameters] MdmServices services)
+        public static async Task<Ok> DeleteUserAsync(int userId, [AsParameters] DiServices services)
         {
             var user = services.MdmContext.Users.SingleOrDefault(u => u.Id == userId);
             if (user == null)
@@ -116,8 +129,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-
-        public static async Task<Results<Ok, BadRequest<string>>> CreateRoleAsync([FromBody] CreateRoleRequest request, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok, BadRequest<string>>> CreateRoleAsync([FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
         {
             var validator = new CreateRoleRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
@@ -125,6 +137,13 @@ namespace AdminStarterKit.Api.Apis
             {
                 return TypedResults.BadRequest(validationResult.ToString());
             }
+
+            var exsitedRole = await services.MdmContext.Roles.FirstOrDefaultAsync(r => r.RoleName == request.RoleName);
+            if (exsitedRole != null)
+            {
+                return TypedResults.BadRequest(Resources.DuplicateRoleName(request.RoleName));
+            }
+
             var role = new Role
             {
                 RoleName = request.RoleName
@@ -134,14 +153,14 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok<List<RoleDto>>> GetAllRoleAsync([AsParameters] MdmServices services)
+        public static async Task<Ok<List<RoleDto>>> GetAllRoleAsync([AsParameters] DiServices services)
         {
             var roles = await services.MdmContext.Roles.OrderBy(u => u.CreatedDateTime).ToListAsync();
             var rolesDto = services.Mapper.Map<List<RoleDto>>(roles);
             return TypedResults.Ok(rolesDto);
         }
 
-        public static async Task<Results<Ok<RoleDto>, NotFound<string>>> GetRoleByIdAsync(int roleId, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok<RoleDto>, NotFound<string>>> GetRoleByIdAsync(int roleId, [AsParameters] DiServices services)
         {
             var role = await services.MdmContext.Roles.FindAsync(roleId);
             if (role == null)
@@ -152,25 +171,33 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(roleDto);
         }
 
-        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateRoleAsync(int roleId, [FromBody] CreateRoleRequest request, [AsParameters] MdmServices services)
+        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateRoleAsync(int roleId, [FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
         {
-            var role = services.MdmContext.Roles.SingleOrDefault(u => u.Id == roleId);
-            if (role == null)
-            {
-                return TypedResults.NotFound(Resources.NotFound(nameof(roleId)));
-            }
             var validator = new CreateRoleRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (validationResult.IsValid == false)
             {
                 return TypedResults.BadRequest(validationResult.ToString());
             }
+
+            var role = services.MdmContext.Roles.SingleOrDefault(u => u.Id == roleId);
+            if (role == null)
+            {
+                return TypedResults.NotFound(Resources.NotFound(nameof(roleId)));
+            }
+
+            var exsitedRole = await services.MdmContext.Roles.FirstOrDefaultAsync(r => r.RoleName == request.RoleName && r.Id != roleId);
+            if (exsitedRole != null)
+            {
+                return TypedResults.BadRequest(Resources.DuplicateRoleName(request.RoleName));
+            }
+
             role.RoleName = request.RoleName;
             await services.MdmContext.SaveChangesAsync();
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok> DeleteRoleAsync(int roleId, [AsParameters] MdmServices services)
+        public static async Task<Ok> DeleteRoleAsync(int roleId, [AsParameters] DiServices services)
         {
             var role = services.MdmContext.Roles.SingleOrDefault(u => u.Id == roleId);
             if (role == null)
