@@ -10,6 +10,3 @@
 Add-Migration InitialCreate
 Update-Database
 ```
-## Refers:
-
-[Is the repository pattern useful with Entity Framework Core?](https://www.thereformedprogrammer.net/is-the-repository-pattern-useful-with-entity-framework-core/)

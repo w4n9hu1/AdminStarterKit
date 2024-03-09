@@ -11,4 +11,14 @@ namespace AdminStarterKit.Api.Validations
             RuleFor(x => x.Password).NotEmpty();
         }
     }
+
+    public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
+    {
+        public ChangePasswordRequestValidator()
+        {
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(6).MaximumLength(20);
+            RuleFor(x => x.OldPassword).NotEmpty();
+        }
+    }
 }

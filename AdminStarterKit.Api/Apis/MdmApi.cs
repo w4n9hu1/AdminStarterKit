@@ -5,6 +5,7 @@ using AdminStarterKit.Domain.Aggregates;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AdminStarterKit.Api.Apis
 {
@@ -80,7 +81,8 @@ namespace AdminStarterKit.Api.Apis
             {
                 Email = request.Email,
                 UserName = request.UserName,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                CreatedBy = services.UserId
             };
             user.HashPassWord();
             services.MdmContext.Users.Add(user);
@@ -146,7 +148,8 @@ namespace AdminStarterKit.Api.Apis
 
             var role = new Role
             {
-                RoleName = request.RoleName
+                RoleName = request.RoleName,
+                CreatedBy = services.UserId
             };
             services.MdmContext.Roles.Add(role);
             await services.MdmContext.SaveChangesAsync();

@@ -63,7 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGroup("").MapAuthApi();
+app.MapGroup("").MapAuthApi().RequireAuthorization();
 app.MapGroup("").MapMdmApi().RequireAuthorization("admin");
 app.MapGroup("task").MapTaskApi().RequireAuthorization();
 

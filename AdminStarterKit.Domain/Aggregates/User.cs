@@ -18,6 +18,8 @@ namespace AdminStarterKit.Domain.Aggregates
 
         public bool IsAdmin { get; set; }
 
+        public int CreatedBy { get; set; }
+
         public DateTimeOffset CreatedDateTime { get; set; }
 
         public DateTimeOffset? UpdatedDateTime { get; set; }
