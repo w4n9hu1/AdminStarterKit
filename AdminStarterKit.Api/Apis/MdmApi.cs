@@ -13,7 +13,7 @@ namespace AdminStarterKit.Api.Apis
     {
         public static RouteGroupBuilder MapMdmApi(this RouteGroupBuilder builder)
         {
-            builder.MapPost("/user", CreateUserAsync);
+            builder.MapPost("/user", CreateUserAsync).AllowAnonymous();
             builder.MapGet("/user", GetAllUserAsync);
             builder.MapGet("/user/{userId:int}", GetUserByIdAsync);
             builder.MapDelete("user/{userId:int}", DeleteUserAsync);

@@ -12,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(JwtConfig.Position));
+builder.Services.AddConfig(builder.Configuration);
+
 var jwtConfig = builder.Configuration.GetSection(JwtConfig.Position).Get<JwtConfig>();
 
 builder.Services.AddCors(options =>
@@ -49,7 +50,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("admin", policy => policy.RequireRole("admin"));
 });
 
-builder.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 app.UseCors("AllowAll");
