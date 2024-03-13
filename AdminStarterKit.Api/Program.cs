@@ -1,13 +1,13 @@
 using AdminStarterKit.Api;
 using AdminStarterKit.Api.Apis;
 using AdminStarterKit.Api.Extensions;
+using AdminStarterKit.Api.Middlewares;
 using AdminStarterKit.Domain.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
-using AdminStarterKit.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -54,6 +54,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
+ 
 app.UseCors("AllowAll");
 app.UseWatchDogMiddleware();
 app.UseAuthentication();

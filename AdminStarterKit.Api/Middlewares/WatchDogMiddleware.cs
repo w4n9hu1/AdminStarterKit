@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdminStarterKit.Infrastructure.Middlewares
+﻿namespace AdminStarterKit.Api.Middlewares
 {
     public class WatchDogMiddleware
     {
@@ -19,6 +11,16 @@ namespace AdminStarterKit.Infrastructure.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+            context.Request.EnableBuffering();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await context.Request.Body.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                var requestBody = await new StreamReader(memoryStream).ReadToEndAsync();
+            }
+            context.Request.Body.Position = 0;
+
             await _next(context);
         }
     }
@@ -30,5 +32,4 @@ namespace AdminStarterKit.Infrastructure.Middlewares
             return builder.UseMiddleware<WatchDogMiddleware>();
         }
     }
-
 }
