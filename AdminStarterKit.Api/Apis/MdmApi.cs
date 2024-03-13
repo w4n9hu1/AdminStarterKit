@@ -64,7 +64,8 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(userDto);
         }
 
-        public static async Task<Results<Ok, BadRequest<string>>> CreateUserAsync([FromBody] CreateUserRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok, BadRequest<string>>> CreateUserAsync([FromBody] CreateUserRequest request,
+            [AsParameters] DiServices services, HttpRequest http)
         {
             var validator = new CreateUserRequestValidator();
             var validationResult = await validator.ValidateAsync(request);

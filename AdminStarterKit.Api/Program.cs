@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using AdminStarterKit.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -54,6 +55,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 app.UseCors("AllowAll");
+app.UseWatchDogMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
