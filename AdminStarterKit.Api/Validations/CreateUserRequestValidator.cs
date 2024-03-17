@@ -9,8 +9,7 @@ namespace AdminStarterKit.Api.Validations
         {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.PhoneNumber).MinimumLength(11).MaximumLength(50);
-            RuleFor(x => x.UserName).MinimumLength(3).MaximumLength(50)
-                .WithMessage("username's length should be 3-50");
+            RuleFor(x => x.UserName).MinimumLength(3).MaximumLength(50);
         }
     }
 }

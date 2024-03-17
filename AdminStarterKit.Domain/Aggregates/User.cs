@@ -1,8 +1,10 @@
-﻿namespace AdminStarterKit.Domain.Aggregates
+﻿using AdminStarterKit.Domain.Shared;
+
+namespace AdminStarterKit.Domain.Aggregates
 {
     public class User : Entity, IAggregateRoot
     {
-        public string?  UserName { get; set; }
+        public string? UserName { get; set; }
 
         public string Email { get; set; }
 
@@ -16,6 +18,8 @@
 
         public bool IsAdmin { get; set; }
 
+        public int CreatedBy { get; set; }
+
         public DateTimeOffset CreatedDateTime { get; set; }
 
         public DateTimeOffset? UpdatedDateTime { get; set; }
@@ -28,7 +32,7 @@
             {
                 Password = Email;
             }
-            PasswordHash = "hash_" + Password;
+            PasswordHash = PasswordHasher.HashPassword(Password);
         }
     }
 }
