@@ -13,23 +13,23 @@ namespace AdminStarterKit.Api.Apis
     {
         public static RouteGroupBuilder MapMdmApi(this RouteGroupBuilder builder)
         {
-            builder.MapPost("/user", CreateUserAsync).AllowAnonymous();
-            builder.MapGet("/user", GetAllUserAsync);
-            builder.MapGet("/user/{userId:int}", GetUserByIdAsync);
-            builder.MapDelete("user/{userId:int}", DeleteUserAsync);
-            builder.MapPut("user/{userId:int}", UpdateUserAsync);
+            builder.MapPost("/user", CreateUser).AllowAnonymous();
+            builder.MapGet("/user", GetAllUser);
+            builder.MapGet("/user/{userId:int}", GetUserById);
+            builder.MapDelete("user/{userId:int}", DeleteUser);
+            builder.MapPut("user/{userId:int}", UpdateUser);
 
-            builder.MapPost("/role", CreateRoleAsync);
-            builder.MapGet("/role", GetAllRoleAsync);
-            builder.MapGet("/role/{roleId:int}", GetRoleByIdAsync);
-            builder.MapDelete("role/{roleId:int}", DeleteRoleAsync);
-            builder.MapPut("role/{roleId:int}", UpdateRoleAsync);
+            builder.MapPost("/role", CreateRole);
+            builder.MapGet("/role", GetAllRole);
+            builder.MapGet("/role/{roleId:int}", GetRoleById);
+            builder.MapDelete("role/{roleId:int}", DeleteRole);
+            builder.MapPut("role/{roleId:int}", UpdateRole);
 
-            builder.MapPost("/assignRoleToUser", AssignRoleToUserAsync);
+            builder.MapPost("/assignRoleToUser", AssignRoleToUser);
             return builder;
         }
 
-        private static async Task<Results<Ok, NotFound<string>>> AssignRoleToUserAsync([FromBody] BindRoleToUserRequest request, [AsParameters] DiServices services)
+        private static async Task<Results<Ok, NotFound<string>>> AssignRoleToUser([FromBody] BindRoleToUserRequest request, [AsParameters] DiServices services)
         {
             var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == request.UserId);
             if (user == null)
@@ -46,14 +46,14 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok<List<UserDto>>> GetAllUserAsync([AsParameters] DiServices services)
+        public static async Task<Ok<List<UserDto>>> GetAllUser([AsParameters] DiServices services)
         {
             var users = await services.MdmContext.Users.OrderBy(u => u.CreatedDateTime).ToListAsync();
             var usersDto = services.Mapper.Map<List<UserDto>>(users);
             return TypedResults.Ok(usersDto);
         }
 
-        public static async Task<Results<Ok<UserDto>, NotFound<string>>> GetUserByIdAsync(int userId, [AsParameters] DiServices services)
+        public static async Task<Results<Ok<UserDto>, NotFound<string>>> GetUserById(int userId, [AsParameters] DiServices services)
         {
             var user = await services.MdmContext.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Id == userId);
             if (user == null)
@@ -64,7 +64,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(userDto);
         }
 
-        public static async Task<Results<Ok, BadRequest<string>>> CreateUserAsync([FromBody] CreateUserRequest request,
+        public static async Task<Results<Ok, BadRequest<string>>> CreateUser([FromBody] CreateUserRequest request,
             [AsParameters] DiServices services, HttpRequest http)
         {
             var validator = new CreateUserRequestValidator();
@@ -91,7 +91,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateUserAsync(int userId, [FromBody] CreateUserRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateUser(int userId, [FromBody] CreateUserRequest request, [AsParameters] DiServices services)
         {
             var validator = new CreateUserRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
@@ -120,7 +120,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok> DeleteUserAsync(int userId, [AsParameters] DiServices services)
+        public static async Task<Ok> DeleteUser(int userId, [AsParameters] DiServices services)
         {
             var user = services.MdmContext.Users.SingleOrDefault(u => u.Id == userId);
             if (user == null)
@@ -132,7 +132,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Results<Ok, BadRequest<string>>> CreateRoleAsync([FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok, BadRequest<string>>> CreateRole([FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
         {
             var validator = new CreateRoleRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
@@ -157,14 +157,14 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok<List<RoleDto>>> GetAllRoleAsync([AsParameters] DiServices services)
+        public static async Task<Ok<List<RoleDto>>> GetAllRole([AsParameters] DiServices services)
         {
             var roles = await services.MdmContext.Roles.OrderBy(u => u.CreatedDateTime).ToListAsync();
             var rolesDto = services.Mapper.Map<List<RoleDto>>(roles);
             return TypedResults.Ok(rolesDto);
         }
 
-        public static async Task<Results<Ok<RoleDto>, NotFound<string>>> GetRoleByIdAsync(int roleId, [AsParameters] DiServices services)
+        public static async Task<Results<Ok<RoleDto>, NotFound<string>>> GetRoleById(int roleId, [AsParameters] DiServices services)
         {
             var role = await services.MdmContext.Roles.FindAsync(roleId);
             if (role == null)
@@ -175,7 +175,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(roleDto);
         }
 
-        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateRoleAsync(int roleId, [FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok, NotFound<string>, BadRequest<string>>> UpdateRole(int roleId, [FromBody] CreateRoleRequest request, [AsParameters] DiServices services)
         {
             var validator = new CreateRoleRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
@@ -201,7 +201,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok();
         }
 
-        public static async Task<Ok> DeleteRoleAsync(int roleId, [AsParameters] DiServices services)
+        public static async Task<Ok> DeleteRole(int roleId, [AsParameters] DiServices services)
         {
             var role = services.MdmContext.Roles.SingleOrDefault(u => u.Id == roleId);
             if (role == null)

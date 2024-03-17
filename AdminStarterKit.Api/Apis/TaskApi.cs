@@ -6,11 +6,11 @@ namespace AdminStarterKit.Api.Apis
     {
         public static RouteGroupBuilder MapTaskApi(this RouteGroupBuilder builder)
         {
-            builder.MapPost("/", CreateTaskAsync);
+            builder.MapPost("/", CreateTask);
             return builder;
         }
 
-        private static Ok CreateTaskAsync()
+        private static Ok CreateTask()
         {
             return TypedResults.Ok();
         }

@@ -3,7 +3,6 @@ using AdminStarterKit.Api.Contracts;
 using AdminStarterKit.Api.Validations;
 using AdminStarterKit.Domain;
 using AdminStarterKit.Domain.Shared;
-using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +13,12 @@ namespace AdminStarterKit.Api.Apis
     {
         public static RouteGroupBuilder MapAuthApi(this RouteGroupBuilder builder)
         {
-            builder.MapPost("/login", LoginAsync).AllowAnonymous();
-            builder.MapPost("/changePassword", ChangePaawordAsync);
+            builder.MapPost("/login", Login).AllowAnonymous();
+            builder.MapPost("/changePassword", ChangePaaword);
             return builder;
         }
 
-        public static async Task<Results<Ok<string>, BadRequest<string>>> ChangePaawordAsync([FromBody] ChangePasswordRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok<string>, BadRequest<string>>> ChangePaaword([FromBody] ChangePasswordRequest request, [AsParameters] DiServices services)
         {
             var validator = new ChangePasswordRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
@@ -43,7 +42,7 @@ namespace AdminStarterKit.Api.Apis
             return TypedResults.Ok(Resources.ChangePasswordSuccessful());
         }
 
-        public static async Task<Results<Ok<AccessTokenResponse>, BadRequest<string>>> LoginAsync([FromBody] LoginRequest request, [AsParameters] DiServices services)
+        public static async Task<Results<Ok<AccessTokenResponse>, BadRequest<string>>> Login([FromBody] LoginRequest request, [AsParameters] DiServices services)
         {
             var validator = new LoginRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
