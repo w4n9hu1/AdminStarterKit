@@ -22,20 +22,14 @@ namespace AdminStarterKit.Api.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services
             , IConfiguration config)
         {
-            //var serverVersion = new MySqlServerVersion(new Version(8, 3, 0));
-            //var connectionString = config.GetConnectionString("MysqlDB");
-            //services.AddDbContext<MdmContext>(dbContextOptions =>
-            //    dbContextOptions
-            //   .UseMySql(connectionString, serverVersion)
-            //   .LogTo(Console.WriteLine, LogLevel.Information)
-            //   .EnableSensitiveDataLogging()
-            //   .EnableDetailedErrors());
+            var serverVersion = new MySqlServerVersion(new Version(8, 3, 0));
+            var connectionString = config.GetConnectionString("MysqlDB");
             services.AddDbContext<MdmContext>(dbContextOptions =>
-                 dbContextOptions
-                .UseInMemoryDatabase("MdmDatabase")
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors());
+                dbContextOptions
+               .UseMySql(connectionString, serverVersion)
+               .LogTo(Console.WriteLine, LogLevel.Information)
+               .EnableSensitiveDataLogging()
+               .EnableDetailedErrors());
 
             services.AddAutoMapper(typeof(UserProfile));
 
